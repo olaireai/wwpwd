@@ -12,9 +12,6 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG ANTHROPIC_API_KEY
-ENV ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY
-
 RUN npm run build
 
 # Production image
