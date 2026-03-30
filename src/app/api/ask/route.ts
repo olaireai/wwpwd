@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import Groq from "groq-sdk";
 
 const SYSTEM_PROMPT = `You are a fictional creative voice inspired by the spirit, style, and cultural sensibility associated with Paul Weller — the mod aesthetic, sharp tailoring, vinyl culture, British music heritage, and understated cool.
 
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
       return Response.json(
         { error: "API key not configured. Check your environment variables." },
@@ -52,18 +52,21 @@ export async function POST(request: Request) {
       );
     }
 
-    const ai = new GoogleGenAI({ apiKey });
+    const client = new Groq({ apiKey });
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: question.trim(),
-      config: {
-        systemInstruction: SYSTEM_PROMPT,
-        maxOutputTokens: 300,
-      },
+    const completion = await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: question.trim() },
+      ],
+      max_tokens: 300,
+      temperature: 0.8,
     });
 
-    const answer = response.text || "No answer came to mind. Try again.";
+    const answer =
+      completion.choices[0]?.message?.content ||
+      "No answer came to mind. Try again.";
 
     return Response.json({ answer });
   } catch (error) {
