@@ -95,7 +95,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex flex-col items-center px-5 py-16 sm:py-24">
-      <div className="w-full max-w-[620px]">
+      <div className="w-full max-w-[620px] enter-stagger">
 
         {/* ── Header ── */}
         <header className="text-center mb-14 sm:mb-20">
@@ -123,7 +123,7 @@ export default function Home() {
         </header>
 
         {/* ── Divider ── */}
-        <div className="h-px bg-rule mb-10" />
+        <div className="h-px bg-rule mb-10 animate-draw" />
 
         {/* ── Input ── */}
         <section>
@@ -143,7 +143,7 @@ export default function Home() {
             rows={3}
             maxLength={500}
             disabled={loading}
-            className="w-full bg-transparent border-b border-rule px-0 py-3 text-charcoal text-[15px] sm:text-base leading-relaxed placeholder:text-muted/50 focus:outline-none focus:border-navy/40 transition-colors disabled:opacity-40"
+            className="w-full bg-white/60 border border-rule rounded px-4 py-4 text-charcoal text-[15px] sm:text-base leading-relaxed placeholder:text-muted/50 focus:outline-none focus:border-burgundy/40 focus:ring-1 focus:ring-burgundy/10 transition-all disabled:opacity-40"
           />
 
           <div className="flex items-center justify-between mt-5">
@@ -178,7 +178,7 @@ export default function Home() {
 
         {/* ── Suggested Questions ── */}
         {!answer && !loading && (
-          <section className="mt-12">
+          <section className="mt-12 animate-reveal">
             <div className="h-px bg-rule mb-6" />
             <p className="text-[10px] uppercase tracking-[0.2em] text-muted mb-4">
               Or if you&apos;re stuck
@@ -210,7 +210,7 @@ export default function Home() {
         {/* ── Response ── */}
         {answer && (
           <section className="mt-12 animate-fade-up">
-            <div className="h-px bg-rule mb-8" />
+            <div className="h-px bg-rule mb-8 animate-draw" />
 
             <p className="text-[10px] uppercase tracking-[0.25em] text-burgundy mb-6">
               WWPWD says
@@ -257,7 +257,7 @@ export default function Home() {
 
         {/* ── History ── */}
         {history.length > 0 && !loading && !answer && (
-          <section className="mt-16">
+          <section className="mt-16 animate-reveal">
             <div className="h-px bg-rule mb-6" />
             <p className="text-[10px] uppercase tracking-[0.2em] text-muted mb-4">
               Previously

@@ -122,6 +122,45 @@ body {
   animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+/* ── Staggered entrance animations ── */
+@keyframes enterUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.enter-stagger > * {
+  opacity: 0;
+  animation: enterUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.enter-stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.enter-stagger > *:nth-child(2) { animation-delay: 0.15s; }
+.enter-stagger > *:nth-child(3) { animation-delay: 0.25s; }
+.enter-stagger > *:nth-child(4) { animation-delay: 0.35s; }
+.enter-stagger > *:nth-child(5) { animation-delay: 0.45s; }
+.enter-stagger > *:nth-child(6) { animation-delay: 0.55s; }
+
+/* ── Section reveal on state change ── */
+@keyframes sectionReveal {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-reveal {
+  animation: sectionReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Divider draw-in ── */
+@keyframes drawIn {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.animate-draw {
+  transform-origin: left;
+  animation: drawIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
