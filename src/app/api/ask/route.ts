@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI } from "@google/genai";
 
 const SYSTEM_PROMPT = `You are a fictional creative voice inspired by the spirit, style, and cultural sensibility associated with Paul Weller — the mod aesthetic, sharp tailoring, vinyl culture, British music heritage, and understated cool.
 
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return Response.json(
         { error: "API key not configured. Check your environment variables." },
@@ -52,22 +52,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const client = new Anthropic({ apiKey });
+    const ai = new GoogleGenAI({ apiKey });
 
-    const message = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 300,
-      system: SYSTEM_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: question.trim(),
-        },
-      ],
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: question.trim(),
+      config: {
+        systemInstruction: SYSTEM_PROMPT,
+        maxOutputTokens: 300,
+      },
     });
 
-    const textBlock = message.content.find((block) => block.type === "text");
-    const answer = textBlock ? textBlock.text : "No answer came to mind. Try again.";
+    const answer = response.text || "No answer came to mind. Try again.";
 
     return Response.json({ answer });
   } catch (error) {
