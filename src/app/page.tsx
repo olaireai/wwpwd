@@ -2,13 +2,31 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const SUGGESTED_QUESTIONS = [
+const ALL_QUESTIONS = [
   "Should I quit my job and start a band?",
   "Is it worth going back to someone who let you down?",
   "What do you do when the world feels like it has gone mad?",
   "How do you stay sharp when everyone around you is giving up?",
   "Should I care what people think of me?",
+  "How do you deal with getting older?",
+  "Is it too late to change direction?",
+  "Should I buy the expensive jacket?",
+  "How do you know when a friendship has run its course?",
+  "What do you do when you have lost your confidence?",
+  "Is vinyl really better than digital?",
+  "How do you stay relevant without selling out?",
+  "Should I move to London?",
+  "What is the secret to looking sharp on a budget?",
+  "How do you get over a creative block?",
+  "Is it worth learning an instrument at 30?",
+  "Should I tell them how I really feel?",
+  "What do you do when no one believes in your idea?",
 ];
+
+function pickRandom(arr: string[], count: number): string[] {
+  const shuffled = [...arr].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
 
 interface HistoryItem {
   question: string;
@@ -23,6 +41,11 @@ export default function Home() {
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
+  useEffect(() => {
+    setSuggestions(pickRandom(ALL_QUESTIONS, 5));
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem("wwpwd-history");
@@ -184,7 +207,7 @@ export default function Home() {
               Or if you&apos;re stuck
             </p>
             <div className="space-y-1.5">
-              {SUGGESTED_QUESTIONS.map((q) => (
+              {suggestions.map((q) => (
                 <button
                   key={q}
                   onClick={() => {
@@ -238,6 +261,7 @@ export default function Home() {
                 onClick={() => {
                   setAnswer("");
                   setQuestion("");
+                  setSuggestions(pickRandom(ALL_QUESTIONS, 5));
                 }}
                 className="text-[10px] uppercase tracking-[0.2em] text-muted hover:text-charcoal transition-colors"
               >
