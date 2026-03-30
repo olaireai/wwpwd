@@ -119,8 +119,9 @@ export default function Home() {
         </h1>
         <div className="mt-4 w-12 h-px bg-burgundy mx-auto" />
         <p className="mt-4 text-warm-grey text-sm sm:text-base tracking-wide">
-          Fictional advice in the spirit of mod culture, sharp style, and
-          British music heritage.
+          The Modfather always knows. Well, almost always.
+          <br />
+          He got lost once — but only because the sat nav wasn't wearing the right shoes.
         </p>
       </header>
 
