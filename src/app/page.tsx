@@ -24,14 +24,13 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
-  // Load history from localStorage
   useEffect(() => {
     const saved = localStorage.getItem("wwpwd-history");
     if (saved) {
       try {
         setHistory(JSON.parse(saved));
       } catch {
-        // Ignore corrupt data
+        /* ignore */
       }
     }
   }, []);
@@ -87,12 +86,6 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleClear = () => {
-    setQuestion("");
-    setAnswer("");
-    setError("");
-  };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -101,83 +94,96 @@ export default function Home() {
   };
 
   return (
-    <main className="flex-1 flex flex-col items-center justify-start px-4 py-12 sm:py-20">
-      {/* Header */}
-      <header className="text-center mb-10 sm:mb-14 max-w-2xl">
-        <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-5 rounded-full overflow-hidden border-2 border-divider shadow-sm">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/paul-weller.jpg"
-            alt="Stylistic portrait"
-            className="w-full h-full object-cover object-top"
-          />
-        </div>
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold text-charcoal tracking-tight leading-tight">
-          What Would
-          <br />
-          <span className="text-navy">Paul Weller</span> Do?
-        </h1>
-        <div className="mt-4 w-12 h-px bg-burgundy mx-auto" />
-        <p className="mt-4 text-warm-grey text-sm sm:text-base tracking-wide">
-          The Modfather always knows. Well, almost always.
-          <br />
-          He got lost once — but only because the sat nav wasn't wearing the right shoes.
-        </p>
-      </header>
+    <main className="min-h-screen flex flex-col items-center px-5 py-16 sm:py-24">
+      <div className="w-full max-w-[620px]">
 
-      {/* Question Card */}
-      <div className="w-full max-w-xl">
-        <div className="bg-white/70 backdrop-blur-sm border border-divider rounded-lg p-5 sm:p-7 shadow-sm">
+        {/* ── Header ── */}
+        <header className="text-center mb-14 sm:mb-20">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 rounded-full overflow-hidden border border-rule">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/paul-weller.jpg"
+              alt="Stylistic portrait"
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
+
+          <h1 className="font-serif text-[28px] sm:text-[42px] text-navy tracking-[-0.02em] leading-[1.15]">
+            What Would Paul Weller Do?
+          </h1>
+
+          <div className="mt-5 w-10 h-px bg-burgundy mx-auto" />
+
+          <p className="mt-5 text-muted text-[13px] sm:text-[14px] leading-relaxed tracking-wide max-w-md mx-auto">
+            The Modfather always knows. Well, almost always.
+            <br />
+            He got lost once — but only because the sat nav
+            wasn&apos;t wearing the right shoes.
+          </p>
+        </header>
+
+        {/* ── Divider ── */}
+        <div className="h-px bg-rule mb-10" />
+
+        {/* ── Input ── */}
+        <section>
           <label
             htmlFor="question"
-            className="block text-[11px] uppercase tracking-[0.15em] text-warm-grey font-medium mb-3"
+            className="block text-[10px] uppercase tracking-[0.2em] text-muted mb-4"
           >
-            Your Question
+            Your question
           </label>
+
           <textarea
             id="question"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Should I quit my job and start a band?"
+            placeholder="Go on then… what's the situation?"
             rows={3}
             maxLength={500}
             disabled={loading}
-            className="w-full bg-cream/50 border border-divider rounded px-4 py-3 text-charcoal text-sm sm:text-base placeholder:text-warm-grey/60 focus:outline-none focus:border-navy/40 focus:ring-1 focus:ring-navy/20 transition-colors disabled:opacity-50"
+            className="w-full bg-transparent border-b border-rule px-0 py-3 text-charcoal text-[15px] sm:text-base leading-relaxed placeholder:text-muted/50 focus:outline-none focus:border-navy/40 transition-colors disabled:opacity-40"
           />
-          <div className="flex items-center justify-between mt-4 gap-3">
+
+          <div className="flex items-center justify-between mt-5">
             <button
               onClick={() => handleSubmit()}
               disabled={loading || !question.trim()}
-              className="bg-charcoal text-cream px-6 py-2.5 text-sm font-medium tracking-wide rounded hover:bg-charcoal-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="text-[11px] uppercase tracking-[0.2em] text-charcoal border border-charcoal px-5 py-2 hover:bg-charcoal hover:text-paper transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed"
             >
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="w-3.5 h-3.5 border-2 border-cream/30 border-t-cream rounded-full animate-spin" />
-                  Thinking...
-                </span>
-              ) : (
-                "Ask"
-              )}
+              {loading ? "Give it a second…" : "Go on then"}
             </button>
-            {question && (
+
+            {question && !loading && (
               <button
-                onClick={handleClear}
-                className="text-warm-grey text-xs uppercase tracking-wider hover:text-charcoal transition-colors"
+                onClick={() => {
+                  setQuestion("");
+                  setAnswer("");
+                  setError("");
+                }}
+                className="text-[10px] uppercase tracking-[0.2em] text-muted hover:text-charcoal transition-colors"
               >
-                Clear
+                Start over
               </button>
             )}
           </div>
-        </div>
 
-        {/* Suggested Questions */}
-        {!answer && !loading && (
-          <div className="mt-6">
-            <p className="text-[11px] uppercase tracking-[0.15em] text-warm-grey font-medium mb-3">
-              Or try one of these
+          {!question && !answer && !loading && (
+            <p className="mt-3 text-[11px] text-muted/60 tracking-wide">
+              No pressure.
             </p>
-            <div className="flex flex-wrap gap-2">
+          )}
+        </section>
+
+        {/* ── Suggested Questions ── */}
+        {!answer && !loading && (
+          <section className="mt-12">
+            <div className="h-px bg-rule mb-6" />
+            <p className="text-[10px] uppercase tracking-[0.2em] text-muted mb-4">
+              Or if you&apos;re stuck
+            </p>
+            <div className="space-y-1.5">
               {SUGGESTED_QUESTIONS.map((q) => (
                 <button
                   key={q}
@@ -185,65 +191,78 @@ export default function Home() {
                     setQuestion(q);
                     handleSubmit(q);
                   }}
-                  className="text-xs text-charcoal/70 bg-parchment hover:bg-divider border border-divider/60 px-3 py-1.5 rounded transition-colors"
+                  className="block w-full text-left text-[13px] text-olive hover:text-charcoal py-2 border-b border-rule/40 last:border-0 transition-colors"
                 >
                   {q}
                 </button>
               ))}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Error */}
+        {/* ── Error ── */}
         {error && (
-          <div className="mt-5 p-4 bg-burgundy/5 border border-burgundy/20 rounded text-burgundy text-sm">
-            {error}
+          <div className="mt-8 py-4 border-t border-b border-burgundy/20">
+            <p className="text-[13px] text-burgundy">{error}</p>
           </div>
         )}
 
-        {/* Answer Card */}
+        {/* ── Response ── */}
         {answer && (
-          <div className="mt-6 animate-fade-in">
-            <div className="border-l-2 border-burgundy bg-white/50 backdrop-blur-sm rounded-r-lg p-5 sm:p-7">
-              <p className="text-[11px] uppercase tracking-[0.15em] text-warm-grey font-medium mb-3">
-                The Answer
-              </p>
-              <blockquote className="text-charcoal text-sm sm:text-base leading-relaxed whitespace-pre-line font-serif italic">
+          <section className="mt-12 animate-fade-up">
+            <div className="h-px bg-rule mb-8" />
+
+            <p className="text-[10px] uppercase tracking-[0.25em] text-burgundy mb-6">
+              WWPWD says
+            </p>
+
+            <div className="bg-beige/40 border-l-2 border-burgundy py-8 px-6 sm:px-8">
+              <blockquote className="font-serif text-navy text-[17px] sm:text-[19px] leading-[1.7] whitespace-pre-line">
                 {answer}
               </blockquote>
-              <div className="mt-4 flex items-center gap-4">
-                <button
-                  onClick={handleCopy}
-                  className="text-[11px] uppercase tracking-[0.15em] text-warm-grey hover:text-charcoal transition-colors"
-                >
-                  {copied ? "Copied" : "Copy"}
-                </button>
-                <span className="text-divider">|</span>
-                <button
-                  onClick={() => {
-                    setAnswer("");
-                    setQuestion("");
-                  }}
-                  className="text-[11px] uppercase tracking-[0.15em] text-warm-grey hover:text-charcoal transition-colors"
-                >
-                  Ask Another
-                </button>
-              </div>
             </div>
-          </div>
+
+            <p className="mt-4 text-[11px] text-muted/50 italic tracking-wide">
+              Make of that what you will.
+            </p>
+
+            <div className="mt-6 flex items-center gap-6">
+              <button
+                onClick={handleCopy}
+                className="text-[10px] uppercase tracking-[0.2em] text-muted hover:text-charcoal transition-colors"
+              >
+                {copied ? "Done" : "Copy"}
+              </button>
+              <span className="text-rule">·</span>
+              <button
+                onClick={() => {
+                  setAnswer("");
+                  setQuestion("");
+                }}
+                className="text-[10px] uppercase tracking-[0.2em] text-muted hover:text-charcoal transition-colors"
+              >
+                Ask another
+              </button>
+            </div>
+          </section>
         )}
 
-        {/* History */}
-        {history.length > 0 && !loading && (
-          <div className="mt-10">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-px flex-1 bg-divider" />
-              <p className="text-[11px] uppercase tracking-[0.15em] text-warm-grey font-medium">
-                Recent Questions
-              </p>
-              <div className="h-px flex-1 bg-divider" />
-            </div>
-            <div className="space-y-2">
+        {/* ── Loading ── */}
+        {loading && (
+          <section className="mt-12">
+            <div className="h-px bg-rule mb-8" />
+            <p className="text-[13px] text-muted italic">Still thinking.</p>
+          </section>
+        )}
+
+        {/* ── History ── */}
+        {history.length > 0 && !loading && !answer && (
+          <section className="mt-16">
+            <div className="h-px bg-rule mb-6" />
+            <p className="text-[10px] uppercase tracking-[0.2em] text-muted mb-4">
+              Previously
+            </p>
+            <div className="space-y-1">
               {history.map((item) => (
                 <button
                   key={item.timestamp}
@@ -251,23 +270,21 @@ export default function Home() {
                     setQuestion(item.question);
                     setAnswer(item.answer);
                   }}
-                  className="w-full text-left text-xs text-charcoal/60 hover:text-charcoal bg-parchment/50 hover:bg-parchment border border-transparent hover:border-divider/40 px-4 py-2.5 rounded transition-colors truncate"
+                  className="block w-full text-left text-[12px] text-muted hover:text-charcoal py-2 border-b border-rule/30 last:border-0 transition-colors truncate"
                 >
                   {item.question}
                 </button>
               ))}
             </div>
-          </div>
+          </section>
         )}
       </div>
 
-      {/* Footer */}
-      <footer className="mt-auto pt-16 pb-6 text-center">
-        <div className="w-8 h-px bg-divider mx-auto mb-4" />
-        <p className="text-[10px] text-warm-grey/70 tracking-wide max-w-sm mx-auto leading-relaxed">
-          A creative tribute. Not affiliated with or endorsed by Paul Weller.
-          <br />
-          Responses are fictional and for entertainment only.
+      {/* ── Footer ── */}
+      <footer className="mt-auto pt-20 pb-8 text-center">
+        <div className="w-6 h-px bg-rule mx-auto mb-5" />
+        <p className="text-[10px] text-muted/50 tracking-[0.1em] leading-relaxed">
+          Not affiliated. Just having a think.
         </p>
       </footer>
     </main>
