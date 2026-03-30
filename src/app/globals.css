@@ -39,7 +39,7 @@ body {
   width: 180%;
   height: 50%;
   border-radius: 45% 48% 42% 50%;
-  opacity: 0.04;
+  opacity: 0.14;
   background: #6E2C2C;
 }
 
@@ -54,7 +54,7 @@ body {
   width: 160%;
   height: 40%;
   border-radius: 50% 42% 48% 44%;
-  opacity: 0.025;
+  opacity: 0.09;
   animation: fluidDrift2 22s ease-in-out infinite alternate;
 }
 
@@ -75,7 +75,7 @@ body {
   width: 120%;
   height: 45%;
   border-radius: 42% 55% 45% 50%;
-  opacity: 0.03;
+  opacity: 0.10;
   background: #6E2C2C;
   animation: fluidDrift3 25s ease-in-out infinite alternate;
 }
@@ -88,7 +88,7 @@ body {
   width: 80%;
   height: 35%;
   border-radius: 50% 40% 55% 45%;
-  opacity: 0.02;
+  opacity: 0.07;
   background: #6E2C2C;
   animation: fluidDrift 20s ease-in-out infinite alternate-reverse;
 }
