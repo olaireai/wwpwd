@@ -104,6 +104,14 @@ export default function Home() {
     <main className="flex-1 flex flex-col items-center justify-start px-4 py-12 sm:py-20">
       {/* Header */}
       <header className="text-center mb-10 sm:mb-14 max-w-2xl">
+        <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-5 rounded-full overflow-hidden border-2 border-divider shadow-sm">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/paul-weller.jpg"
+            alt="Stylistic portrait"
+            className="w-full h-full object-cover object-top"
+          />
+        </div>
         <h1 className="font-serif text-3xl sm:text-5xl font-bold text-charcoal tracking-tight leading-tight">
           What Would
           <br />
