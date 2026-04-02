@@ -458,10 +458,10 @@ export default function Home() {
           {/* Portrait — large, circular, with concentric target rings */}
           <div className="flex items-center justify-center mb-8">
             <div className="relative flex items-center justify-center">
-              {/* Target rings — outermost to inner */}
-              <div className="absolute w-[290px] h-[290px] sm:w-[320px] sm:h-[320px] rounded-full border border-rule/20" />
-              <div className="absolute w-[252px] h-[252px] sm:w-[278px] sm:h-[278px] rounded-full border border-rule/30" />
-              <div className="absolute w-[216px] h-[216px] sm:w-[238px] sm:h-[238px] rounded-full border border-burgundy/20" />
+              {/* Target rings — outermost to inner, pulse like soundwaves */}
+              <div className="absolute w-[290px] h-[290px] sm:w-[320px] sm:h-[320px] rounded-full border border-rule/20 ring-pulse-1" />
+              <div className="absolute w-[252px] h-[252px] sm:w-[278px] sm:h-[278px] rounded-full border border-rule/30 ring-pulse-2" />
+              <div className="absolute w-[216px] h-[216px] sm:w-[238px] sm:h-[238px] rounded-full border border-burgundy/20 ring-pulse-3" />
               {/* Faint halo */}
               <div className="absolute w-[196px] h-[196px] sm:w-[216px] sm:h-[216px] rounded-full bg-burgundy/4" />
               {/* Portrait */}

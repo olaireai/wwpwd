@@ -80,7 +80,31 @@ body {
 }
 
 /* ─────────────────────────────────────────────
-   3. VINYL GROOVE RING — spins around the face during loading
+   3. PORTRAIT SOUNDWAVE RINGS — concentric rings that pulse outward
+   like sound radiating from the portrait. Inner ring fires first,
+   outer rings follow with a delay to create a ripple effect.
+   ───────────────────────────────────────────── */
+@keyframes soundwave {
+  0%   { transform: scale(1);     opacity: var(--sw-opacity, 0.3); }
+  50%  { transform: scale(1.055); opacity: calc(var(--sw-opacity, 0.3) * 0.45); }
+  100% { transform: scale(1);     opacity: var(--sw-opacity, 0.3); }
+}
+
+.ring-pulse-1 {
+  --sw-opacity: 0.20;
+  animation: soundwave 3.2s ease-in-out infinite;
+}
+.ring-pulse-2 {
+  --sw-opacity: 0.30;
+  animation: soundwave 3.2s ease-in-out infinite 0.55s;
+}
+.ring-pulse-3 {
+  --sw-opacity: 0.50;
+  animation: soundwave 3.2s ease-in-out infinite 1.1s;
+}
+
+/* ─────────────────────────────────────────────
+   4. VINYL GROOVE RING — spins around the face during loading
    The face sits at center as the record label.
    ───────────────────────────────────────────── */
 .vinyl-ring {
