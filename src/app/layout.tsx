@@ -34,11 +34,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body className="min-h-screen flex flex-col">
+        {/* Mod roundel — slowly rotating bullseye, barely visible */}
+        <div className="mod-roundel" aria-hidden="true" />
         <div className="fluid-wave" aria-hidden="true" />
         <div className="fluid-wave-upper" aria-hidden="true" />
         <div className="relative z-10 flex flex-col min-h-screen">
           {children}
         </div>
+        {/* Scanlines — op-art / vintage print texture, above all content */}
+        <div className="scanlines" aria-hidden="true" />
       </body>
     </html>
   );

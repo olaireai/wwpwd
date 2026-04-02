@@ -30,7 +30,10 @@ const ALBUMS = [
   "Sonik Kicks", "Saturn's Pattern", "A Kind Revolution", "On Sunset", "Fat Pop",
 ];
 
-// Idle nudges shown after 30s of inactivity
+// NME-style ticker — albums + tracks + references
+const TICKER =
+  "The Jam\u2003·\u2003Paul Weller\u2003·\u2003In the City\u2003·\u2003Setting Sons\u2003·\u2003Sound Affects\u2003·\u2003The Gift\u2003·\u2003Wild Wood\u2003·\u2003Stanley Road\u2003·\u2003Style Council\u2003·\u2003Going Underground\u2003·\u2003Town Called Malice\u2003·\u2003English Rose\u2003·\u2003That's Entertainment\u2003·\u2003The Eton Rifles\u2003·\u200322 Dreams\u2003·\u2003Wake Up the Nation\u2003·\u2003Fat Pop\u2003·\u2003Mod\u2003·\u2003Soul\u2003·\u2003Style\u2003·\u2003Carnaby Street\u2003·\u2003Brighton\u2003·\u2003";
+
 const IDLE_NUDGES = [
   "Something on your mind?",
   "Go on. He won't bite.",
@@ -72,7 +75,6 @@ export default function Home() {
   const skipTypewriterRef = useRef(false);
   const answerRef = useRef<HTMLElement>(null);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const questionCountRef = useRef(0);
 
   useEffect(() => {
     setSuggestions(pickRandom(ALL_QUESTIONS, 5));
@@ -83,12 +85,9 @@ export default function Home() {
     if (saved) {
       try { setHistory(JSON.parse(saved)); } catch { /* ignore */ }
     }
-    // Load question count
-    const count = parseInt(localStorage.getItem("wwpwd-count") || "0", 10);
-    questionCountRef.current = count;
   }, []);
 
-  // Idle nudge — appears after 30s of inactivity on idle state
+  // Idle nudge after 30s of no activity
   useEffect(() => {
     if (answer || loading) { setIdleNudge(""); return; }
     const reset = () => {
@@ -110,7 +109,7 @@ export default function Home() {
     };
   }, [answer, loading]);
 
-  // Typewriter effect
+  // Typewriter
   useEffect(() => {
     if (!answer) { setDisplayedAnswer(""); return; }
     if (skipTypewriterRef.current) {
@@ -128,7 +127,7 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [answer]);
 
-  // Scroll to answer when it arrives
+  // Scroll to answer
   useEffect(() => {
     if (answer && answerRef.current) {
       setTimeout(() => {
@@ -137,13 +136,9 @@ export default function Home() {
     }
   }, [answer]);
 
-  // Keyboard hint — show after typing starts
+  // Keyboard hint
   useEffect(() => {
-    if (question.length > 0) {
-      setShowHint(true);
-    } else {
-      setShowHint(false);
-    }
+    setShowHint(question.length > 0);
   }, [question]);
 
   const saveToHistory = useCallback(
@@ -180,11 +175,12 @@ export default function Home() {
       }
       setAnswer(data.answer);
       setAlbum(ALBUMS[Math.floor(Math.random() * ALBUMS.length)]);
-      setSharpness(Math.floor(Math.random() * 2) + 4); // 4 or 5 — he's always sharp
+      setSharpness(Math.floor(Math.random() * 2) + 4);
       setAvatarState("answered");
-      // Increment question count
-      questionCountRef.current += 1;
-      localStorage.setItem("wwpwd-count", String(questionCountRef.current));
+      localStorage.setItem(
+        "wwpwd-count",
+        String(parseInt(localStorage.getItem("wwpwd-count") || "0", 10) + 1)
+      );
       saveToHistory(text, data.answer);
     } catch {
       setError("Could not reach the server. Try again.");
@@ -240,7 +236,7 @@ export default function Home() {
     <main className="min-h-screen flex flex-col items-center px-5 py-16 sm:py-24">
       <div className="w-full max-w-[620px] enter-stagger">
 
-        {/* ── Header — purely typographic ── */}
+        {/* ── Header — typographic only ── */}
         <header className="text-center mb-14 sm:mb-20">
           <h1 className="font-serif text-[30px] sm:text-[46px] text-navy tracking-[-0.02em] leading-[1.15]">
             What Would Paul Weller Do?
@@ -299,7 +295,6 @@ export default function Home() {
             </button>
 
             <div className="flex items-center gap-4">
-              {/* Keyboard hint */}
               {showHint && !loading && (
                 <span className="text-[10px] text-muted/40 tracking-wide animate-reveal">
                   ↵ to submit
@@ -368,13 +363,18 @@ export default function Home() {
           </div>
         )}
 
-        {/* ── Loading — face thinks ── */}
+        {/* ── Loading — face on spinning vinyl ── */}
         {loading && (
           <section className="mt-12 animate-reveal">
             <div className="h-px bg-rule mb-10" />
-            <div className="flex flex-col items-center gap-5">
-              <div className="relative">
-                <div className="w-16 h-16 rounded-full overflow-hidden border border-rule animate-thinking">
+            <div className="flex flex-col items-center gap-6">
+
+              {/* Vinyl record with face as label */}
+              <div className="relative w-16 h-16">
+                {/* Spinning groove ring — extends beyond face */}
+                <div className="vinyl-ring animate-vinyl-spin" />
+                {/* Face — static, sits on the "label" */}
+                <div className="relative w-full h-full rounded-full overflow-hidden border border-rule/60 animate-thinking z-10">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/paul-weller.jpg"
@@ -382,12 +382,14 @@ export default function Home() {
                     className="w-full h-full object-cover object-top"
                   />
                 </div>
-                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
+                {/* Thinking dots */}
+                <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex gap-1 z-20">
                   <span className="w-1.5 h-1.5 rounded-full bg-burgundy/60 animate-dot1" />
                   <span className="w-1.5 h-1.5 rounded-full bg-burgundy/60 animate-dot2" />
                   <span className="w-1.5 h-1.5 rounded-full bg-burgundy/60 animate-dot3" />
                 </div>
               </div>
+
               <p className="text-[12px] text-muted italic mt-1">Still thinking.</p>
             </div>
           </section>
@@ -398,18 +400,20 @@ export default function Home() {
           <section ref={answerRef} className="mt-12 animate-fade-up scroll-mt-8">
             <div className="h-px bg-rule mb-8 animate-draw" />
 
-            {/* Sharpness rating */}
+            {/* Sharpness rating — mod target dots */}
             {sharpness > 0 && !isTyping && (
-              <div className="flex items-center gap-2 mb-5 animate-reveal">
+              <div className="flex items-center gap-2.5 mb-5 animate-reveal">
                 <span className="text-[10px] uppercase tracking-[0.2em] text-muted">
                   Sharpness
                 </span>
-                <div className="flex gap-1">
+                <div className="flex gap-1.5">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <span
                       key={i}
-                      className={`inline-block w-2 h-2 rounded-full transition-colors ${
-                        i < sharpness ? "bg-burgundy" : "bg-rule"
+                      className={`inline-block rounded-full transition-colors ${
+                        i < sharpness
+                          ? "w-2.5 h-2.5 bg-burgundy ring-2 ring-burgundy/20"
+                          : "w-2 h-2 bg-rule"
                       }`}
                     />
                   ))}
@@ -417,11 +421,14 @@ export default function Home() {
               </div>
             )}
 
-            {/* Face + bubble */}
+            {/* Face + bubble row */}
             <div className="flex items-start gap-4 sm:gap-5">
-              {/* Portrait */}
+
+              {/* Portrait — spotlight halo in answered state */}
               <div className="relative flex-shrink-0 mt-1">
-                <div className="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full overflow-hidden border border-burgundy/30 shadow-[0_0_0_4px_rgba(110,44,44,0.08)]">
+                <div
+                  className={`w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full overflow-hidden border border-burgundy/30 portrait-spotlight`}
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/paul-weller.jpg"
@@ -429,6 +436,7 @@ export default function Home() {
                     className="w-full h-full object-cover object-top"
                   />
                 </div>
+                {/* Sunglasses — drop in */}
                 <span
                   className="absolute left-1/2 text-base sm:text-xl animate-glasses-drop pointer-events-none select-none"
                   style={{ top: "34%", transform: "translateX(-50%)" }}
@@ -437,18 +445,37 @@ export default function Home() {
                 </span>
               </div>
 
-              {/* Speech bubble — double-click to copy */}
+              {/* Speech bubble with tailor corner marks + giant quote mark + B-SIDE stamp */}
               <div
-                className={`speech-bubble flex-1 min-w-0 cursor-default select-none transition-all duration-200 ${bubbleCopied ? "opacity-60" : ""}`}
+                className={`speech-bubble flex-1 min-w-0 cursor-default overflow-hidden transition-opacity duration-200 ${bubbleCopied ? "opacity-60" : ""}`}
                 onDoubleClick={handleBubbleCopy}
                 title="Double-click to copy"
               >
+                {/* Tailor corner marks */}
+                <span className="tailor-tl" aria-hidden="true" />
+                <span className="tailor-tr" aria-hidden="true" />
+                <span className="tailor-bl" aria-hidden="true" />
+                <span className="tailor-br" aria-hidden="true" />
+
+                {/* Large serif open-quote — editorial drop cap */}
+                <span
+                  aria-hidden="true"
+                  className="absolute -top-4 -left-2 font-serif text-[100px] sm:text-[120px] leading-none text-burgundy pointer-events-none select-none"
+                  style={{ opacity: 0.055 }}
+                >
+                  &ldquo;
+                </span>
+
+                {/* B-SIDE stamp */}
+                <span className="bside-stamp" aria-hidden="true">B&ndash;Side</span>
+
                 {bubbleCopied && (
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-burgundy mb-2 animate-reveal">
+                  <p className="text-[10px] uppercase tracking-[0.15em] text-burgundy mb-2 animate-reveal relative z-10">
                     Copied
                   </p>
                 )}
-                <blockquote className="font-serif text-navy text-[16px] sm:text-[18px] leading-[1.75] whitespace-pre-line select-text">
+
+                <blockquote className="font-serif text-navy text-[16px] sm:text-[18px] leading-[1.75] whitespace-pre-line select-text relative z-10">
                   {displayedAnswer}
                   {isTyping && (
                     <span className="animate-blink ml-px text-burgundy/60">|</span>
@@ -457,11 +484,20 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Below bubble — indented to align with bubble */}
+            {/* Metadata + actions — indented to align with bubble */}
             {!isTyping && (
-              <div className="mt-5 pl-[calc(3.5rem+1rem)] sm:pl-[calc(4.5rem+1.25rem)] animate-reveal">
+              <div
+                className="mt-5 animate-reveal"
+                style={{ paddingLeft: "calc(3.5rem + 1rem)" }}
+              >
                 {album && (
-                  <p className="text-[10px] text-muted/50 tracking-[0.12em] uppercase mb-3">
+                  <p className="text-[10px] text-muted/50 tracking-[0.12em] uppercase mb-3 sm:hidden sm:pl-[calc(4.5rem+1.25rem)]">
+                    Wisdom from:{" "}
+                    <span className="italic normal-case tracking-normal">{album}</span>
+                  </p>
+                )}
+                {album && (
+                  <p className="text-[10px] text-muted/50 tracking-[0.12em] uppercase mb-3 hidden sm:block">
                     Wisdom from:{" "}
                     <span className="italic normal-case tracking-normal">{album}</span>
                   </p>
@@ -524,17 +560,27 @@ export default function Home() {
       </div>
 
       {/* ── Footer ── */}
-      <footer className="mt-auto pt-20 pb-8 text-center">
-        <div className="w-6 h-px bg-rule mx-auto mb-5" />
-        {/* Idle nudge */}
-        {idleNudge && (
-          <p className="text-[11px] text-burgundy/50 italic mb-3 animate-reveal">
-            {idleNudge}
+      <footer className="mt-auto pt-20 pb-6 w-full max-w-[620px] px-5">
+
+        {/* NME-style scrolling ticker */}
+        <div className="ticker-wrap mb-6 border-t border-rule/50 pt-4">
+          <div className="ticker-track">
+            <span className="ticker-text">{TICKER}</span>
+            <span className="ticker-text" aria-hidden="true">{TICKER}</span>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <div className="w-6 h-px bg-rule mx-auto mb-5" />
+          {idleNudge && (
+            <p className="text-[11px] text-burgundy/50 italic mb-3 animate-reveal">
+              {idleNudge}
+            </p>
+          )}
+          <p className="text-[10px] text-muted/50 tracking-[0.1em] leading-relaxed">
+            Not affiliated. Just having a think.
           </p>
-        )}
-        <p className="text-[10px] text-muted/50 tracking-[0.1em] leading-relaxed">
-          Not affiliated. Just having a think.
-        </p>
+        </div>
       </footer>
     </main>
   );
