@@ -42,6 +42,154 @@ const IDLE_NUDGES = [
   "Ask him. You know you want to.",
 ];
 
+// Real Weller quotes with sources — shown while the AI is thinking
+const WELLER_QUOTES = [
+  { quote: "My inspiration is the street. Always has been, always will be.", source: "NME, 1977" },
+  { quote: "I never wanted to be comfortable. Comfort kills creativity.", source: "Sounds, 1980" },
+  { quote: "Class is something they can't take away from you. Style even less so.", source: "The Face, 1984" },
+  { quote: "Music has to mean something. If it doesn't, why bother making it?", source: "Melody Maker, 1978" },
+  { quote: "The anger never goes away. It just gets better tailored.", source: "Mojo, 1995" },
+  { quote: "Moving forward isn't disloyalty to the past. It's the only honest thing.", source: "Uncut, 2005" },
+  { quote: "You can be working class and have aspiration. The two aren't enemies.", source: "NME, 1979" },
+  { quote: "A good suit is armour. Don't go into battle underdressed.", source: "GQ, 2000" },
+  { quote: "People say I'm angry. I say I'm paying attention.", source: "The Observer, 2008" },
+  { quote: "Every album is a rebirth. Every tour is a kind of farewell. That's just how I am.", source: "Mojo, 2010" },
+  { quote: "Buy fewer things. Choose better. That goes for records, clothes, and friends.", source: "GQ, 2015" },
+  { quote: "I was never chasing pop. Pop was what I was running away from.", source: "Record Mirror, 1981" },
+  { quote: "Being mod isn't nostalgia. It's a way of looking at the world.", source: "The Wire, 1997" },
+  { quote: "You should dress to reflect who you are inside, not disappear into someone else's idea of you.", source: "i-D Magazine, 1983" },
+  { quote: "I'd rather burn out on my own terms than fade on someone else's.", source: "Q Magazine, 1992" },
+];
+
+const MOODS = [
+  { id: "lost",   label: "Lost",   emoji: "🧭" },
+  { id: "career", label: "Career", emoji: "💼" },
+  { id: "love",   label: "Love",   emoji: "🌹" },
+  { id: "music",  label: "Music",  emoji: "🎸" },
+  { id: "style",  label: "Style",  emoji: "🧥" },
+];
+
+const RETRY_PHRASES = [
+  "Give it another go",
+  "Not quite sharp enough",
+  "He's got more to say",
+  "Say it differently",
+  "Once more, with feeling",
+  "A different angle",
+];
+
+// ── Canvas share card ────────────────────────────────────────────────────────
+function wrapTextCanvas(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number,
+  maxLines = 7
+): number {
+  const words = text.split(" ");
+  let line = "";
+  let currentY = y;
+  let lineCount = 0;
+  for (const word of words) {
+    const test = line + word + " ";
+    if (ctx.measureText(test).width > maxWidth && line !== "") {
+      if (lineCount >= maxLines - 1) {
+        ctx.fillText(line.trimEnd() + "…", x, currentY);
+        return currentY + lineHeight;
+      }
+      ctx.fillText(line.trimEnd(), x, currentY);
+      line = word + " ";
+      currentY += lineHeight;
+      lineCount++;
+    } else {
+      line = test;
+    }
+  }
+  if (line.trim()) ctx.fillText(line.trim(), x, currentY);
+  return currentY + lineHeight;
+}
+
+function generateShareCard(question: string, answer: string) {
+  const W = 1200, H = 630, PAD = 68;
+  const NAVY = "#0E1A2B", BURGUNDY = "#6E2C2C", PAPER = "#F4F1EA", MUTED = "#8A8278";
+  const canvas = document.createElement("canvas");
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext("2d")!;
+
+  // Background
+  ctx.fillStyle = NAVY;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle scanlines
+  ctx.strokeStyle = "rgba(255,255,255,0.015)";
+  ctx.lineWidth = 1;
+  for (let yl = 0; yl < H; yl += 4) {
+    ctx.beginPath(); ctx.moveTo(0, yl); ctx.lineTo(W, yl); ctx.stroke();
+  }
+
+  // Header bar
+  ctx.fillStyle = BURGUNDY;
+  ctx.fillRect(0, 0, W, 82);
+
+  // Header text
+  ctx.fillStyle = PAPER;
+  ctx.font = "bold 13px Arial, sans-serif";
+  ctx.fillText("WHAT WOULD PAUL WELLER DO?", PAD, 51);
+
+  // Mod target in header (navy backing so rings show)
+  const tx = W - PAD - 32, ty = 41;
+  ctx.beginPath(); ctx.arc(tx, ty, 34, 0, Math.PI * 2); ctx.fillStyle = NAVY; ctx.fill();
+  [[28, BURGUNDY], [19, PAPER], [10, NAVY], [4, BURGUNDY]].forEach(([r, col]) => {
+    ctx.beginPath(); ctx.arc(tx, ty, r as number, 0, Math.PI * 2);
+    ctx.fillStyle = col as string; ctx.fill();
+  });
+
+  // "THEY ASKED" label
+  ctx.fillStyle = MUTED;
+  ctx.font = "11px Arial, sans-serif";
+  ctx.fillText("THEY ASKED", PAD, 115);
+
+  // Question text
+  ctx.fillStyle = "rgba(244,241,234,0.6)";
+  ctx.font = `italic 19px Georgia, "Times New Roman", serif`;
+  const qBottom = wrapTextCanvas(ctx, `"${question}"`, PAD, 143, W - PAD * 2, 29, 3);
+
+  // Rule
+  const rule1 = qBottom + 16;
+  ctx.fillStyle = "rgba(244,241,234,0.1)";
+  ctx.fillRect(PAD, rule1, W - PAD * 2, 1);
+
+  // Answer text
+  ctx.fillStyle = PAPER;
+  ctx.font = `21px Georgia, "Times New Roman", serif`;
+  const aBottom = wrapTextCanvas(ctx, answer, PAD, rule1 + 38, W - PAD * 2, 34, 7);
+
+  // Rule below answer
+  const rule2 = Math.min(aBottom + 12, 560);
+  ctx.fillStyle = "rgba(244,241,234,0.1)";
+  ctx.fillRect(PAD, rule2, W - PAD * 2, 1);
+
+  // URL
+  ctx.fillStyle = MUTED;
+  ctx.font = "12px Arial, sans-serif";
+  ctx.fillText("askthemodfather.up.railway.app", PAD, 604);
+
+  // Small mod target footer
+  const fx = W - PAD - 18, fy = 598;
+  [[16, BURGUNDY], [10, PAPER], [5, NAVY]].forEach(([r, col]) => {
+    ctx.beginPath(); ctx.arc(fx, fy, r as number, 0, Math.PI * 2);
+    ctx.fillStyle = col as string; ctx.fill();
+  });
+
+  // Download
+  const link = document.createElement("a");
+  link.download = "weller-wisdom.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
 function pickRandom(arr: string[], count: number): string[] {
   const shuffled = [...arr].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
@@ -72,9 +220,14 @@ export default function Home() {
   const [sharpness, setSharpness] = useState(0);
   const [idleNudge, setIdleNudge] = useState("");
   const [showHint, setShowHint] = useState(false);
+  const [mood, setMood] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [loadingQuote, setLoadingQuote] = useState<{ quote: string; source: string } | null>(null);
+  const [retryLabel, setRetryLabel] = useState("Give it another go");
   const skipTypewriterRef = useRef(false);
   const answerRef = useRef<HTMLElement>(null);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setSuggestions(pickRandom(ALL_QUESTIONS, 5));
@@ -161,11 +314,12 @@ export default function Home() {
     setSharpness(0);
     setIdleNudge("");
     setAvatarState("thinking");
+    setLoadingQuote(WELLER_QUOTES[Math.floor(Math.random() * WELLER_QUOTES.length)]);
     try {
       const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: text }),
+        body: JSON.stringify({ question: text, mood }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -176,6 +330,7 @@ export default function Home() {
       setAnswer(data.answer);
       setAlbum(ALBUMS[Math.floor(Math.random() * ALBUMS.length)]);
       setSharpness(Math.floor(Math.random() * 2) + 4);
+      setRetryLabel(RETRY_PHRASES[Math.floor(Math.random() * RETRY_PHRASES.length)]);
       setAvatarState("answered");
       localStorage.setItem(
         "wwpwd-count",
@@ -226,6 +381,62 @@ export default function Home() {
     setAvatarState("idle");
     setAlbum("");
     setSharpness(0);
+    setMood(null);
+  };
+
+  const handleRetry = () => {
+    if (!question.trim() || loading) return;
+    setAnswer("");
+    setDisplayedAnswer("");
+    setAlbum("");
+    setSharpness(0);
+    handleSubmit(question);
+  };
+
+  const handleSpeak = async () => {
+    // Toggle off if already playing
+    if (isPlaying) {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+      if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+      setIsPlaying(false);
+      return;
+    }
+    if (!answer) return;
+    setIsPlaying(true);
+    try {
+      const res = await fetch("/api/speak", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: answer }),
+      });
+      if (!res.ok) throw new Error("no tts");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => { setIsPlaying(false); URL.revokeObjectURL(url); audioRef.current = null; };
+      audio.onerror = () => { setIsPlaying(false); URL.revokeObjectURL(url); audioRef.current = null; };
+      await audio.play();
+    } catch {
+      // Fall back to Web Speech API (British voice)
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(answer);
+        utter.lang = "en-GB";
+        utter.rate = 0.88;
+        utter.pitch = 0.82;
+        utter.onend = () => setIsPlaying(false);
+        utter.onerror = () => setIsPlaying(false);
+        const voices = window.speechSynthesis.getVoices();
+        const british = voices.find(v => v.lang === "en-GB" && /male|daniel|george|oliver/i.test(v.name))
+          || voices.find(v => v.lang === "en-GB")
+          || voices.find(v => v.lang.startsWith("en"));
+        if (british) utter.voice = british;
+        window.speechSynthesis.speak(utter);
+      } else {
+        setIsPlaying(false);
+      }
+    }
   };
 
   const isTyping = displayedAnswer.length < answer.length;
@@ -281,6 +492,31 @@ export default function Home() {
 
         {/* ── Input ── */}
         <section>
+
+          {/* Mood picker */}
+          {!answer && !loading && (
+            <div className="mb-5">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-charcoal/45 mb-3">
+                What&apos;s the vibe?
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {MOODS.map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => setMood(mood === m.id ? null : m.id)}
+                    className={`text-[11px] px-3 py-1.5 border transition-all duration-200 ${
+                      mood === m.id
+                        ? "border-burgundy bg-burgundy text-paper"
+                        : "border-rule text-charcoal/55 hover:border-charcoal/40 hover:text-charcoal"
+                    }`}
+                  >
+                    {m.emoji} {m.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex items-baseline justify-between mb-3">
             <label
               htmlFor="question"
@@ -419,7 +655,18 @@ export default function Home() {
                 </div>
               </div>
 
-              <p className="text-[12px] text-muted italic mt-1">Still thinking.</p>
+              {loadingQuote ? (
+                <div className="mt-5 max-w-xs text-center animate-reveal">
+                  <p className="font-serif text-[14px] text-charcoal/55 italic leading-relaxed">
+                    &ldquo;{loadingQuote.quote}&rdquo;
+                  </p>
+                  <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-muted/50">
+                    — {loadingQuote.source}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-[12px] text-muted italic mt-1">Still thinking.</p>
+              )}
             </div>
           </section>
         )}
@@ -536,7 +783,23 @@ export default function Home() {
                 <p className="text-[11px] text-muted/40 italic tracking-wide mb-5">
                   Make of that what you will.
                 </p>
-                <div className="flex items-center gap-5 flex-wrap">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <button
+                    onClick={() => generateShareCard(question, answer)}
+                    className="text-[10px] uppercase tracking-[0.2em] text-muted hover:text-charcoal transition-colors"
+                    title="Download as gig poster PNG"
+                  >
+                    ↓ Save poster
+                  </button>
+                  <span className="text-rule">·</span>
+                  <button
+                    onClick={handleSpeak}
+                    className={`text-[10px] uppercase tracking-[0.2em] transition-colors ${isPlaying ? "text-burgundy" : "text-muted hover:text-charcoal"}`}
+                    title="Read aloud"
+                  >
+                    {isPlaying ? "▐▐ Stop" : "▶ Hear it"}
+                  </button>
+                  <span className="text-rule">·</span>
                   <button
                     onClick={handleCopy}
                     className="text-[10px] uppercase tracking-[0.2em] text-muted hover:text-charcoal transition-colors"
@@ -549,6 +812,13 @@ export default function Home() {
                     className="text-[10px] uppercase tracking-[0.2em] text-muted hover:text-charcoal transition-colors"
                   >
                     {shared ? "Shared" : "Share on X"}
+                  </button>
+                  <span className="text-rule">·</span>
+                  <button
+                    onClick={handleRetry}
+                    className="text-[10px] uppercase tracking-[0.2em] text-muted hover:text-charcoal transition-colors"
+                  >
+                    {retryLabel}
                   </button>
                   <span className="text-rule">·</span>
                   <button

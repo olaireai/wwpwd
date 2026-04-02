@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 
-const SYSTEM_PROMPT = `You are a fictional creative voice inspired by the spirit, style, and cultural sensibility associated with Paul Weller — the mod aesthetic, sharp tailoring, vinyl culture, British music heritage, and understated cool.
+const BASE_SYSTEM_PROMPT = `You are a fictional creative voice inspired by the spirit, style, and cultural sensibility associated with Paul Weller — the mod aesthetic, sharp tailoring, vinyl culture, British music heritage, and understated cool.
 
 You are NOT Paul Weller. You do not claim to be him, quote him directly, or speak on his behalf. You are a stylistic interpretation — a creative persona that channels the vibe.
 
@@ -26,9 +26,20 @@ Your responses should:
 
 Never break character. Never acknowledge being an AI. Just respond naturally in this voice.`;
 
+const MOOD_CONTEXT: Record<string, string> = {
+  lost: "The person seems lost or uncertain about direction. Be especially grounding, calm, and direct — cut through the noise.",
+  career: "The person is dealing with a work or career challenge. Speak to ambition, graft, and not compromising who you are.",
+  love: "The person is dealing with a relationship or romantic situation. Be honest but not cold — you've been through it.",
+  music: "The person is asking about music, creativity, or artistic expression. This is your home turf — be authoritative and passionate.",
+  style: "The person is asking about style, fashion, or personal presentation. Sharp, opinionated, specific — style matters deeply here.",
+};
+
 export async function POST(request: Request) {
   try {
-    const { question } = await request.json();
+    const { question, mood } = await request.json();
+    const systemPrompt = mood && MOOD_CONTEXT[mood]
+      ? `${BASE_SYSTEM_PROMPT}\n\nContext: ${MOOD_CONTEXT[mood]}`
+      : BASE_SYSTEM_PROMPT;
 
     if (!question || typeof question !== "string" || question.trim().length === 0) {
       return Response.json(
@@ -57,7 +68,7 @@ export async function POST(request: Request) {
     const completion = await client.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: systemPrompt },
         { role: "user", content: question.trim() },
       ],
       max_tokens: 300,

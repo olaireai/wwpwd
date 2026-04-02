@@ -19,6 +19,12 @@ export const metadata: Metadata = {
   title: "What Would Paul Weller Do?",
   description:
     "A stylish creative tribute — ask a question, get fictional advice in the spirit of mod culture, sharp tailoring, and British music heritage.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Ask The Modfather",
+  },
   openGraph: {
     title: "What Would Paul Weller Do?",
     description:
