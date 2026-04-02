@@ -236,15 +236,43 @@ export default function Home() {
     <main className="min-h-screen flex flex-col items-center px-5 py-16 sm:py-24">
       <div className="w-full max-w-[620px] enter-stagger">
 
-        {/* ── Header — typographic only ── */}
-        <header className="text-center mb-14 sm:mb-20">
-          <h1 className="font-serif text-[30px] sm:text-[46px] text-navy tracking-[-0.02em] leading-[1.15]">
-            What Would Paul Weller Do?
-          </h1>
-          <div className="mt-5 w-10 h-px bg-burgundy mx-auto" />
-          <p className="mt-5 text-muted text-[13px] sm:text-[14px] leading-relaxed tracking-wide max-w-sm mx-auto">
-            The Modfather always knows. Well, almost always.
-          </p>
+        {/* ── Header — portrait + title, editorial two-column ── */}
+        <header className="mb-14 sm:mb-20">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-10">
+
+            {/* Portrait with mod-target rings */}
+            <div className="flex-shrink-0 mx-auto sm:mx-0">
+              <div className="relative flex items-center justify-center">
+                {/* Outer target rings */}
+                <div className="absolute w-[120px] h-[120px] sm:w-[136px] sm:h-[136px] rounded-full border border-rule/50" />
+                <div className="absolute w-[144px] h-[144px] sm:w-[164px] sm:h-[164px] rounded-full border border-rule/25" />
+                {/* Portrait */}
+                <div className="relative w-[88px] h-[88px] sm:w-[100px] sm:h-[100px] rounded-full overflow-hidden border-2 border-burgundy/25 shadow-[0_0_0_3px_rgba(110,44,44,0.07)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/paul-weller.jpg"
+                    alt="Paul Weller"
+                    className="w-full h-full object-cover object-top"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Title block */}
+            <div className="text-center sm:text-left">
+              <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-burgundy mb-3">
+                The Modfather Advises
+              </p>
+              <h1 className="font-serif text-[28px] sm:text-[40px] text-navy tracking-[-0.02em] leading-[1.15]">
+                What Would<br />Paul Weller Do?
+              </h1>
+              <div className="mt-4 w-10 h-px bg-burgundy mx-auto sm:mx-0" />
+              <p className="mt-4 text-charcoal/55 text-[13px] sm:text-[14px] leading-relaxed max-w-xs mx-auto sm:mx-0">
+                Ask him anything. He&apos;s seen it all, kept his standards,
+                and still irons his shirts.
+              </p>
+            </div>
+          </div>
         </header>
 
         {/* ── Divider ── */}
@@ -252,24 +280,24 @@ export default function Home() {
 
         {/* ── Input ── */}
         <section>
-          <div className="flex items-baseline justify-between mb-4">
+          <div className="flex items-baseline justify-between mb-3">
             <label
               htmlFor="question"
-              className="text-[10px] uppercase tracking-[0.2em] text-muted"
+              className="text-[12px] uppercase tracking-[0.18em] text-charcoal/70 font-medium"
             >
               Your question
             </label>
             {/* Character counter — fades in near limit */}
             <span
-              className={`text-[10px] tabular-nums transition-all duration-300 ${
+              className={`text-[11px] tabular-nums transition-all duration-300 ${
                 nearLimit
                   ? charCount > 470
                     ? "text-burgundy opacity-100"
-                    : "text-muted opacity-70"
+                    : "text-muted opacity-80"
                   : "opacity-0"
               }`}
             >
-              {500 - charCount}
+              {500 - charCount} left
             </span>
           </div>
 
@@ -279,24 +307,24 @@ export default function Home() {
             onChange={(e) => setQuestion(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Go on then… what's the situation?"
-            rows={3}
+            rows={4}
             maxLength={500}
             disabled={loading}
-            className="w-full bg-white/60 border border-rule rounded px-4 py-4 text-charcoal text-[15px] sm:text-base leading-relaxed placeholder:text-muted/50 focus:outline-none focus:border-burgundy/40 focus:ring-1 focus:ring-burgundy/10 transition-all disabled:opacity-40"
+            className="w-full bg-white/70 border border-rule rounded px-4 py-4 text-charcoal text-[15px] sm:text-base leading-relaxed placeholder:text-charcoal/35 focus:outline-none focus:border-burgundy/50 focus:ring-2 focus:ring-burgundy/8 transition-all disabled:opacity-40"
           />
 
           <div className="flex items-center justify-between mt-4">
             <button
               onClick={() => handleSubmit()}
               disabled={loading || !question.trim()}
-              className="text-[11px] uppercase tracking-[0.2em] text-charcoal border border-charcoal px-5 py-2 hover:bg-charcoal hover:text-paper transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed"
+              className="text-[12px] uppercase tracking-[0.18em] text-charcoal border border-charcoal px-6 py-2.5 hover:bg-charcoal hover:text-paper transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed"
             >
               {loading ? "Give it a second…" : "Go on then"}
             </button>
 
             <div className="flex items-center gap-4">
               {showHint && !loading && (
-                <span className="text-[10px] text-muted/40 tracking-wide animate-reveal">
+                <span className="text-[11px] text-muted/60 tracking-wide animate-reveal">
                   ↵ to submit
                 </span>
               )}
@@ -310,7 +338,7 @@ export default function Home() {
                     setAlbum("");
                     setShowHint(false);
                   }}
-                  className="text-[10px] uppercase tracking-[0.2em] text-muted hover:text-charcoal transition-colors"
+                  className="text-[11px] uppercase tracking-[0.18em] text-muted hover:text-charcoal transition-colors"
                 >
                   Start over
                 </button>
@@ -319,8 +347,8 @@ export default function Home() {
           </div>
 
           {!question && !answer && !loading && (
-            <p className="mt-3 text-[11px] text-muted/60 tracking-wide">
-              No pressure.
+            <p className="mt-3 text-[12px] text-charcoal/45 tracking-wide">
+              Ask anything. Life, style, music, the lot.
             </p>
           )}
         </section>
@@ -329,10 +357,10 @@ export default function Home() {
         {!answer && !loading && (
           <section className="mt-12 animate-reveal">
             <div className="h-px bg-rule mb-6" />
-            <p className="text-[10px] uppercase tracking-[0.2em] text-muted mb-4">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-charcoal/60 font-medium mb-5">
               Or if you&apos;re stuck
             </p>
-            <div className="space-y-1.5">
+            <div className="space-y-0">
               {suggestions.map((q) => (
                 <button
                   key={q}
@@ -341,12 +369,12 @@ export default function Home() {
                     setQuestion(q);
                     handleSubmit(q);
                   }}
-                  className={`block w-full text-left text-[13px] py-2 border-b border-rule/40 last:border-0 transition-all duration-300 ${
+                  className={`block w-full text-left text-[14px] py-3 border-b border-rule/50 last:border-0 transition-all duration-300 leading-snug ${
                     activeSuggestion === null
-                      ? "text-olive hover:text-charcoal opacity-100"
+                      ? "text-charcoal/70 hover:text-charcoal hover:pl-1"
                       : activeSuggestion === q
-                      ? "text-charcoal opacity-100"
-                      : "text-muted/30 opacity-30 pointer-events-none"
+                      ? "text-charcoal"
+                      : "text-muted/25 opacity-25 pointer-events-none"
                   }`}
                 >
                   {q}
