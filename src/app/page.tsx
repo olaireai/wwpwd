@@ -551,13 +551,28 @@ export default function Home() {
           />
 
           <div className="flex items-center justify-between mt-4">
-            <button
-              onClick={() => handleSubmit()}
-              disabled={loading || !question.trim()}
-              className="text-[12px] uppercase tracking-[0.18em] text-charcoal border border-charcoal px-6 py-2.5 hover:bg-charcoal hover:text-paper transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed"
-            >
-              {loading ? "Give it a second…" : "Go on then"}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => handleSubmit()}
+                disabled={loading || !question.trim()}
+                className="text-[12px] uppercase tracking-[0.18em] text-charcoal border border-charcoal px-6 py-2.5 hover:bg-charcoal hover:text-paper transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed"
+              >
+                {loading ? "Give it a second…" : "Go on then"}
+              </button>
+              {!loading && !answer && (
+                <button
+                  onClick={() => {
+                    const q = ALL_QUESTIONS[Math.floor(Math.random() * ALL_QUESTIONS.length)];
+                    setQuestion(q);
+                    handleSubmit(q);
+                  }}
+                  className="text-[12px] uppercase tracking-[0.18em] text-burgundy/70 border border-burgundy/30 px-4 py-2.5 hover:bg-burgundy hover:text-paper hover:border-burgundy transition-all duration-200"
+                  title="Pick a random question and go"
+                >
+                  Sod it, surprise me
+                </button>
+              )}
+            </div>
 
             <div className="flex items-center gap-4">
               {showHint && !loading && (
