@@ -185,6 +185,49 @@ body {
 }
 
 /* ─────────────────────────────────────────────
+   5b. TALKING animation — portrait bobs while typewriter runs
+   ───────────────────────────────────────────── */
+@keyframes talking {
+  0%, 100% { transform: scale(1) translateY(0); }
+  15%       { transform: scale(1.02) translateY(-1px); }
+  35%       { transform: scale(0.99) translateY(1px); }
+  55%       { transform: scale(1.02) translateY(-1px); }
+  75%       { transform: scale(1.00) translateY(0.5px); }
+}
+
+.animate-talking {
+  animation: talking 0.55s ease-in-out infinite;
+  border-color: rgba(110, 44, 44, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(110, 44, 44, 0.15);
+}
+
+/* ─────────────────────────────────────────────
+   FLOATING TATTOO ICONS — background decorations
+   ───────────────────────────────────────────── */
+.floater {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.18;
+}
+
+@keyframes floatA {
+  0%,100% { transform: translateY(0px) rotate(var(--r,0deg)); }
+  30%      { transform: translateY(-18px) rotate(calc(var(--r,0deg) + 6deg)); }
+  70%      { transform: translateY(12px) rotate(calc(var(--r,0deg) - 4deg)); }
+}
+@keyframes floatB {
+  0%,100% { transform: translateX(0px) rotate(var(--r,0deg)); }
+  40%      { transform: translateX(-14px) rotate(calc(var(--r,0deg) + 8deg)); }
+  75%      { transform: translateX(18px) rotate(calc(var(--r,0deg) - 5deg)); }
+}
+@keyframes floatC {
+  0%,100% { transform: translate(0,0) rotate(var(--r,0deg)) scale(1); }
+  25%      { transform: translate(-10px,-14px) rotate(calc(var(--r,0deg) + 10deg)) scale(1.08); }
+  60%      { transform: translate(8px,10px) rotate(calc(var(--r,0deg) - 7deg)) scale(0.94); }
+}
+
+/* ─────────────────────────────────────────────
    6. SPOTLIGHT HALO — portrait glow in answered state
    Slow pulse, like a concert spotlight.
    ───────────────────────────────────────────── */

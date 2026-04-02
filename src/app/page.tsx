@@ -452,25 +452,27 @@ export default function Home() {
             {/* Face + bubble row */}
             <div className="flex items-start gap-4 sm:gap-5">
 
-              {/* Portrait — spotlight halo in answered state */}
+              {/* Portrait — swaps to talking image while typewriter runs */}
               <div className="relative flex-shrink-0 mt-1">
                 <div
-                  className={`w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full overflow-hidden border border-burgundy/30 portrait-spotlight`}
+                  className={`w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full overflow-hidden border border-burgundy/30 ${isTyping ? "animate-talking" : "portrait-spotlight"}`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/paul-weller.jpg"
+                    src={isTyping ? "/weller-guitar.jpg" : "/paul-weller.jpg"}
                     alt="The Modfather"
                     className="w-full h-full object-cover object-top"
                   />
                 </div>
-                {/* Sunglasses — drop in */}
-                <span
-                  className="absolute left-1/2 text-base sm:text-xl animate-glasses-drop pointer-events-none select-none"
-                  style={{ top: "34%", transform: "translateX(-50%)" }}
-                >
-                  🕶️
-                </span>
+                {/* Sunglasses — only when not typing, drop in on reveal */}
+                {!isTyping && (
+                  <span
+                    className="absolute left-1/2 text-base sm:text-xl animate-glasses-drop pointer-events-none select-none"
+                    style={{ top: "44%", transform: "translateX(-50%)" }}
+                  >
+                    🕶️
+                  </span>
+                )}
               </div>
 
               {/* Speech bubble with tailor corner marks + giant quote mark + B-SIDE stamp */}
