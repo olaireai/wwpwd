@@ -236,43 +236,44 @@ export default function Home() {
     <main className="min-h-screen flex flex-col items-center px-5 py-16 sm:py-24">
       <div className="w-full max-w-[620px] enter-stagger">
 
-        {/* ── Header — portrait + title, editorial two-column ── */}
-        <header className="mb-14 sm:mb-20">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-10">
+        {/* ── Header — large centrepiece portrait, magazine-cover style ── */}
+        <header className="mb-14 sm:mb-20 text-center">
 
-            {/* Portrait with mod-target rings */}
-            <div className="flex-shrink-0 mx-auto sm:mx-0">
-              <div className="relative flex items-center justify-center">
-                {/* Outer target rings */}
-                <div className="absolute w-[120px] h-[120px] sm:w-[136px] sm:h-[136px] rounded-full border border-rule/50" />
-                <div className="absolute w-[144px] h-[144px] sm:w-[164px] sm:h-[164px] rounded-full border border-rule/25" />
-                {/* Portrait */}
-                <div className="relative w-[88px] h-[88px] sm:w-[100px] sm:h-[100px] rounded-full overflow-hidden border-2 border-burgundy/25 shadow-[0_0_0_3px_rgba(110,44,44,0.07)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/paul-weller.jpg"
-                    alt="Paul Weller"
-                    className="w-full h-full object-cover object-top"
-                  />
-                </div>
+          {/* Eyebrow */}
+          <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] text-burgundy mb-8">
+            The Modfather Advises
+          </p>
+
+          {/* Portrait — large, circular, with concentric target rings */}
+          <div className="flex items-center justify-center mb-8">
+            <div className="relative flex items-center justify-center">
+              {/* Target rings — outermost to inner */}
+              <div className="absolute w-[290px] h-[290px] sm:w-[320px] sm:h-[320px] rounded-full border border-rule/20" />
+              <div className="absolute w-[252px] h-[252px] sm:w-[278px] sm:h-[278px] rounded-full border border-rule/30" />
+              <div className="absolute w-[216px] h-[216px] sm:w-[238px] sm:h-[238px] rounded-full border border-burgundy/20" />
+              {/* Faint halo */}
+              <div className="absolute w-[196px] h-[196px] sm:w-[216px] sm:h-[216px] rounded-full bg-burgundy/4" />
+              {/* Portrait */}
+              <div className="relative w-[176px] h-[176px] sm:w-[196px] sm:h-[196px] rounded-full overflow-hidden border-2 border-burgundy/30 shadow-[0_0_0_4px_rgba(110,44,44,0.08),0_8px_40px_rgba(14,26,43,0.18)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/paul-weller.jpg"
+                  alt="Paul Weller"
+                  className="w-full h-full object-cover object-top"
+                />
               </div>
             </div>
-
-            {/* Title block */}
-            <div className="text-center sm:text-left">
-              <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-burgundy mb-3">
-                The Modfather Advises
-              </p>
-              <h1 className="font-serif text-[28px] sm:text-[40px] text-navy tracking-[-0.02em] leading-[1.15]">
-                What Would<br />Paul Weller Do?
-              </h1>
-              <div className="mt-4 w-10 h-px bg-burgundy mx-auto sm:mx-0" />
-              <p className="mt-4 text-charcoal/55 text-[13px] sm:text-[14px] leading-relaxed max-w-xs mx-auto sm:mx-0">
-                Ask him anything. He&apos;s seen it all, kept his standards,
-                and still irons his shirts.
-              </p>
-            </div>
           </div>
+
+          {/* Title */}
+          <h1 className="font-serif text-[36px] sm:text-[52px] text-navy tracking-[-0.02em] leading-[1.1]">
+            What Would<br />Paul Weller Do?
+          </h1>
+          <div className="mt-5 w-10 h-px bg-burgundy mx-auto" />
+          <p className="mt-5 text-charcoal/55 text-[13px] sm:text-[15px] leading-relaxed max-w-sm mx-auto">
+            Ask him anything. He&apos;s seen it all, kept his standards,
+            and still irons his shirts.
+          </p>
         </header>
 
         {/* ── Divider ── */}
